@@ -24,7 +24,8 @@ CREATE TABLE customer (
     City VARCHAR(20),
     State VARCHAR(20),
     Zip INTEGER,
-    INDEX (LoginName)
+    INDEX (LoginName),
+    PRIMARY KEY(LoginName)
 )  ENGINE=INNODB;
 
 CREATE TABLE transactions(
@@ -39,6 +40,7 @@ CREATE TABLE transactions(
     CONSTRAINT LN
 		FOREIGN KEY(LoginName)
         REFERENCES customer(LoginName)
+        ON DELETE CASCADE ON UPDATE CASCADE
 )ENGINE=INNODB;
 
 CREATE TABLE photo (
@@ -57,13 +59,16 @@ CREATE TABLE photo (
     index (PhotoID),
     CONSTRAINT PBD
 		FOREIGN KEY(PBDate)
-        REFERENCES photographer(PBDate),
+        REFERENCES photographer(PBDate)
+        ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT PName
 		FOREIGN KEY(PName)
-        REFERENCES photographer(PName),
+        REFERENCES photographer(PName)
+        ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT TID
 		FOREIGN KEY(TransID)
         REFERENCES transactions(TransID)
+        ON DELETE CASCADE ON UPDATE CASCADE
 )  ENGINE=INNODB;
     
 CREATE TABLE location(
@@ -82,13 +87,16 @@ CREATE TABLE landscape(
     PRIMARY KEY (PhotoID),
     CONSTRAINT LandscapePID
 		FOREIGN KEY(PhotoID) 
-		REFERENCES photo(PhotoID),
+		REFERENCES photo(PhotoID)
+        ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT l_place
 		FOREIGN KEY(Place)
-		REFERENCES location(Place),
+		REFERENCES location(Place)
+        ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT l_country
 		FOREIGN KEY (Country)
 		REFERENCES location(Country)
+        ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 CREATE TABLE abstract(
@@ -99,6 +107,7 @@ CREATE TABLE abstract(
     CONSTRAINT AbstractPID
 		FOREIGN KEY(PhotoID)
         REFERENCES photo(PhotoID)
+        ON DELETE CASCADE ON UPDATE CASCADE
 )ENGINE=INNODB;
 
 CREATE TABLE model(
@@ -119,13 +128,16 @@ CREATE TABLE models(
     index(PhotoID),index(MName),index(MBDate),
     CONSTRAINT ModelsMName
 		FOREIGN KEY(MName)
-		REFERENCES model(MName),
+		REFERENCES model(MName)
+        ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT ModelsMBDate
 		FOREIGN KEY(MBDate)
-        REFERENCES model(MBDate),
+        REFERENCES model(MBDate)
+        ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT ModelsPID
 		FOREIGN KEY(PhotoID)
         REFERENCES photo(PhotoID)
+        ON DELETE CASCADE ON UPDATE CASCADE
 )ENGINE=INNODB;
 
 CREATE TABLE influences(
@@ -136,16 +148,20 @@ CREATE TABLE influences(
     index(EPName),index(EPBDate),index(RPName),index(RPBDate),
     CONSTRAINT EPN
 		FOREIGN KEY(EPName)
-        REFERENCES photographer(PName),
+        REFERENCES photographer(PName)
+        ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT EPBD
 		FOREIGN KEY(EPBDate)
-        REFERENCES photographer(PBDate),
+        REFERENCES photographer(PBDate)
+        ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT RPN
 		FOREIGN KEY(RPName)
-        REFERENCES photographer(PName),
+        REFERENCES photographer(PName)
+        ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT RPBD
 		FOREIGN KEY(RPBDate)
-        REFERENCES photographer(PBDate),
+        REFERENCES photographer(PBDate)
+        ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY(EPName,EPBDate,RPName,RPBDate)
 )ENGINE=INNODB;
     
