@@ -2,7 +2,6 @@ import mysql.connector
 class Photoshop:
 
     def query1(self,crsr):
-
         crsr.execute('SELECT LoginName FROM transactions WHERE TotalAmount > 100')
         result = crsr.fetchall()
         print(result)
@@ -53,6 +52,81 @@ class Photoshop:
         result = crsr.fetchall()
         print(result)
 
+    def query8(self,crsr):
+        crsr.execute('''SELECT PName,Count(Price)
+        FROM photo
+        GROUP BY PName
+        ''')
+
+        result = crsr.fetchall()
+        print(result)
+
+    def query9(self,crsr,mydb,photoID):
+        crsr.execute('''DELETE FROM photo WHERE PhotoID =%s''',(photoID,))
+        mydb.commit()
+        print('The photo with PhotoID:'+photoID+' was deleted.')
+
+    def query10(self,crsr,mydb,photoID,name):
+        crsr.execute('''UPDATE photo SET PName=%s WHERE PhotoID=%s''',(name,photoID))
+        mydb.commit()
+        print('The photo with the PhotoID:'+photoID+' had the photograhper name updated to '+name+'.')
+
+    def query11(self,crsr):
+        crsr.execute('''SELECT LoginName,SUM(TotalAmount)
+        FROM transactions
+        Group BY LoginName
+        ''')
+        result = crsr.fetchall()
+        print(result)
+
+    def query12(self,crsr):
+        crsr.execute('''SELECT photo.PName,SUM(transactions.TotalAmount)
+        FROM photo INNER JOIN transactions
+        ON photo.TransID = transactions.TransID
+        GROUP BY photo.PName''')
+        result = crsr.fetchall()
+        print(result)
+
+    def query13(self,crsr):
+        landscapequery = '''SELECT SUM(TotalAmount) AS %s
+        FROM transactions WHERE TransID IN
+        (SELECT TransID FROM photo WHERE PhotoID IN
+        (SELECT PhotoID FROM landscape)
+        )'''
+
+        abstractquery = '''SELECT SUM(TotalAmount) AS %s
+        FROM transactions WHERE TransID IN
+        (SELECT TransID FROM photo WHERE PhotoID IN
+        (SELECT PhotoID FROM abstract)
+        )'''
+
+        portraitquery = '''SELECT SUM(TotalAmount) AS %s
+        FROM transactions WHERE TransID IN
+        (SELECT TransID FROM photo WHERE PhotoID IN
+        (SELECT PhotoID FROM models)
+        )'''
+
+
+        crsr.execute(landscapequery,('landscape TotalAmount',))
+        landscape = crsr.fetchall()
+        print(landscape)
+
+        crsr.execute(abstractquery,('abstract TotalAmount',))
+        abstract = crsr.fetchall()
+        print(abstract)
+
+        crsr.execute(portraitquery,('portrait TotalAmount',))
+        portrait = crsr.fetchall()
+        print(portrait)
+
+    def query14(self,crsr):
+        crsr.execute('''SELECT TDate,SUM(TotalAmount) FROM transactions
+        GROUP BY TDate
+        ORDER BY SUM(TotalAmount) DESC''')
+
+        result = crsr.fetchall()
+        print(result)
+
     def __init__(self):
         mydb = mysql.connector.connect(host='localhost',user='root',passwd='SQL2020!nj',database='photoshop')
         crsr = mydb.cursor()
@@ -82,7 +156,30 @@ class Photoshop:
                 photographer = input('Please enter the photograhpers name.')
                 self.query7(crsr,photographer)
                 option = input("Enter 1-14 to run the corresponding query. Enter q to quit the program")
-
+            elif option == '8':
+                self.query8(crsr)
+                option = input("Enter 1-14 to run the corresponding query. Enter q to quit the program")
+            elif option == '9':
+                photoID = input('Enter the photoID of the photo to be deleted.')
+                self.query9(crsr,mydb,photoID)
+                option = input("Enter 1-14 to run the corresponding query. Enter q to quit the program")
+            elif option == '10':
+                photoID = input('Enter the photoID of the photo to be updated.')
+                name = input('Enter the name to update to.')
+                self.query10(crsr,mydb,photoID,name)
+                option = input("Enter 1-14 to run the corresponding query. Enter q to quit the program")
+            elif option == '11':
+                self.query11(crsr)
+                option = input("Enter 1-14 to run the corresponding query. Enter q to quit the program")
+            elif option == '12':
+                self.query12(crsr)
+                option = input("Enter 1-14 to run the corresponding query. Enter q to quit the program")
+            elif option == '13':
+                self.query13(crsr)
+                option = input("Enter 1-14 to run the corresponding query. Enter q to quit the program")
+            elif option == '14':
+                self.query14(crsr)
+                option = input("Enter 1-14 to run the corresponding query. Enter q to quit the program")
 
 
 Photoshop()
