@@ -19,11 +19,12 @@ CREATE TABLE customer (
     CName VARCHAR(20),
     CType VARCHAR(20),
     BillingAddress VARCHAR(20),
-    Str1 VARCHAR(20),
-    Str2 VARCHAR(20),
-    City VARCHAR(20),
-    State VARCHAR(20),
-    Zip INTEGER,
+    CAddress VARCHAR(20),
+    #Str1 VARCHAR(20),
+    #Str2 VARCHAR(20),
+    #City VARCHAR(20),
+    #State VARCHAR(20),
+    #Zip INTEGER,
     INDEX (LoginName),
     PRIMARY KEY(LoginName)
 )  ENGINE=INNODB;
