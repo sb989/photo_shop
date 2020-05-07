@@ -21,11 +21,19 @@ class Photoshop:
         ''',(model,model,))
         result = crsr.fetchall()
         print(result)
+        if len(result) > 0:
+            for r in result[0]:
+                print(r)
+        else:
+            print('No customer bought all photos where ',model,' modeled.')
+        #print(result)
 
     def query4(self,crsr):
         crsr.execute('SELECT RPName FROM influences WHERE EPName IN (SELECT PName FROM photographer WHERE PNationality = "American")')
         result = crsr.fetchall()
-        print(result)
+        for r in result:
+            print(r[0])
+        #print(result)
 
     def query5(self,crsr):
         crsr.execute('''SELECT PName FROM photographer WHERE PName IN
@@ -34,7 +42,9 @@ class Photoshop:
         AND PName NOT IN (SELECT PName FROM photo WHERE PhotoID IN (SELECT PhotoID FROM landscape))
         ''')
         result = crsr.fetchall()
-        print(result)
+        for r in result:
+            print(r[0])
+        #print(result)
 
     def query6(self,crsr):
         crsr.execute('''SELECT TransID,COUNT(*) FROM photo
@@ -42,24 +52,31 @@ class Photoshop:
         HAVING COUNT(*)>=3
         ORDER BY COUNT(*) DESC''')
         result = crsr.fetchall()
+        for r in result:
+            print('TransID ',r[0],'contains ',r[1],' photos.')
         print(result)
 
 
-    def query7(self,crsr,photograhper):
+    def query7(self,crsr,photographer):
         crsr.execute('''SELECT DISTINCT MName FROM models WHERE PhotoID IN (SELECT PhotoID FROM photo WHERE PName=%s)
         AND PhotoID NOT IN (SELECT PhotoID FROM photo WHERE PName !=%s)
-        ''',(photograhper,photograhper,))
+        ''',(photographer,photographer,))
         result = crsr.fetchall()
-        print(result)
+        for r in result:
+            print(r[0],' posed for ',photographer)
+        #print(result)
 
     def query8(self,crsr):
-        crsr.execute('''SELECT PName,Count(Price)
+        crsr.execute('''SELECT PName,SUM(Price)
         FROM photo
         GROUP BY PName
+        ORDER BY SUM(Price) DESC
         ''')
 
         result = crsr.fetchall()
-        print(result)
+        for r in result:
+            print(r[0],' has a combined price of ',r[1])
+        #print(result)
 
     def query9(self,crsr,mydb,photoID):
         crsr.execute('''DELETE FROM photo WHERE PhotoID =%s''',(photoID,))
@@ -77,7 +94,9 @@ class Photoshop:
         Group BY LoginName
         ''')
         result = crsr.fetchall()
-        print(result)
+        for r in result:
+            print(r[0],' has spent ',r[1])
+        #print(result)
 
     def query12(self,crsr):
         crsr.execute('''SELECT photo.PName,SUM(transactions.TotalAmount)
@@ -85,7 +104,9 @@ class Photoshop:
         ON photo.TransID = transactions.TransID
         GROUP BY photo.PName''')
         result = crsr.fetchall()
-        print(result)
+        for r in result:
+            print(r[0],' has made ',r[1])
+        #print(result)
 
     def query13(self,crsr):
         landscapequery = '''SELECT SUM(TotalAmount) AS %s
@@ -109,23 +130,24 @@ class Photoshop:
 
         crsr.execute(landscapequery,('landscape TotalAmount',))
         landscape = crsr.fetchall()
-        print(landscape)
+        print('landscape sales are ',landscape[0][0])
 
         crsr.execute(abstractquery,('abstract TotalAmount',))
         abstract = crsr.fetchall()
-        print(abstract)
+        print('abstract sales are ',abstract[0][0])
 
         crsr.execute(portraitquery,('portrait TotalAmount',))
         portrait = crsr.fetchall()
-        print(portrait)
+        print('portrait sales are ',portrait[0][0])
 
     def query14(self,crsr):
         crsr.execute('''SELECT TDate,SUM(TotalAmount) FROM transactions
         GROUP BY TDate
         ORDER BY SUM(TotalAmount) DESC''')
-
         result = crsr.fetchall()
-        print(result)
+        for r in result:
+            print(r[0],' made ',r[1],' in sales.')
+        #print(result)
 
     def __init__(self):
         mydb = mysql.connector.connect(host='localhost',user='root',passwd='SQL2020!nj',database='photoshop')
