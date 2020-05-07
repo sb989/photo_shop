@@ -180,6 +180,7 @@ class Photoshop:
             elif option == '14':
                 self.query14(crsr)
                 option = input("Enter 1-14 to run the corresponding query. Enter q to quit the program")
-
+            elif option != 'q':
+                option = input("Invalid Input. Enter 1-14 to run the corresponding query. Enter q to quit the program")
 
 Photoshop()
